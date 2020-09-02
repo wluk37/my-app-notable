@@ -25,7 +25,7 @@ my-app-notable
 From within the root directory:
 
 ```sh
-yarn add
+yarn install
 ```
 
 ## CRUD API Routes
