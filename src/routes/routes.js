@@ -7,6 +7,10 @@ const {
   postAppt,
 } = require("../../database/db");
 
+router.get("/", (req, res) => {
+  res.send("hello world");
+});
+
 router.get("/doctors", (req, res) => {
   getDocs()
     .then((response) => {
@@ -45,27 +49,31 @@ router.delete("/appointments/doctor/:doctorID/delete/:apptID", (req, res) => {
 });
 
 router.post("/appointments/doctor/:doctorID/insert", (req, res) => {
-  const { date, patient, kind } = req.body;
+  const { date, patientName, kind } = req.body;
   const { doctorID } = req.params;
 
-  getAppts(doctorID, date).then((response) => {
-    let apptTally = 0;
-    response.forEach((appt) => {
-      let apptTimes = appt.date.getTime();
-      if (apptTimes === date) {
-        apptTally++;
-      }
-    });
+  const apptDate = new Date(date);
+  const minutes = apptDate.getMinutes();
 
-    if (apptTally < 3) {
-      postAppt(date, patient, kind, doctorID)
-        .then((response) => {
-          res.send("success");
-        })
-        .catch((err) => {
-          console.log(err);
-          res.send("failure");
-        });
+  if (minutes % 15 !== 0 && minutes <= 59) {
+    res.send(
+      "Appointment failed. Appointment time needs to fit into a 15 minute interval"
+    );
+  }
+
+  getAppts(doctorID, apptDate).then((response) => {
+    let numAppts = response.length;
+    if (numAppts >= 3) {
+      res.send(
+        "Appointment failed. There are already 3 appointments for this time."
+      );
+    } else {
+      postAppt(date, patientName, kind, doctorID);
+      res.send(
+        `Appointment made successfully. There are ${
+          numAppts + 1
+        } appoinments scheduled for this time.`
+      );
     }
   });
 });
