@@ -21,7 +21,7 @@ const getDocs = () => {
 };
 
 const getAppts = (doctorID, date) => {
-  const allAppts = Appt.find({ doctorID, date: { $gte: date } });
+  const allAppts = Appt.find({ doctorID, date: { $eq: date } });
   return allAppts;
 };
 
