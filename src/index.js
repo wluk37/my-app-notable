@@ -7,6 +7,7 @@ const router = require("./routes/routes");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", router);
 app.get("/doctors", router);
 app.get("/appointments/doctor/:doctorID/date/:date", router);
 app.delete("/appointments/doctor/:doctorID/delete/:apptID", router);
