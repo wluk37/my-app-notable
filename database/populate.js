@@ -15,6 +15,10 @@ conn.on("error", (err) => {
 conn.once("open", () => {
   console.log("Connection Success!");
 
+  conn.db.dropDatabase(() => {
+    console.log("database dropped!");
+  });
+
   const populateDoctors = () => {
     const allDoctors = [];
 
